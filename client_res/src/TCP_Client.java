@@ -1,4 +1,3 @@
-package client_res.src;
 import java.net.*;
 import java.io.*;
 import java.lang.Exception;
