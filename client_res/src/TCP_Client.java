@@ -1,4 +1,7 @@
 import java.net.*;
+
+import xmlClass.XMLContent;
+
 import java.io.*;
 
 public class TCP_Client {
@@ -10,6 +13,9 @@ public class TCP_Client {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+        XMLContent xml_content = new XMLContent();
+        xml_content.addEmployees("e_00000006","Lachaise","Jean","Caissier");
 
         System.out.println("Envoi : abcde123456");
         out.println("abcde123456");
@@ -25,8 +31,8 @@ public class TCP_Client {
             System.out.println("Reçu : " + volume);
             
             if(volume.equals("volume ok")) {
-                System.out.println("Envoi : donnee123456");
-                out.println("donnee123456");
+                System.out.println(xml_content.getXMLContent());
+                out.println(xml_content.getXMLContent());
                 
                 String transfert = in.readLine();
                 System.out.println("Reçu : " + transfert);
