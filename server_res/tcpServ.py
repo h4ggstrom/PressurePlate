@@ -25,7 +25,7 @@ def start_server() -> None:
 
         while True:
             # Réception de l'ID 
-            conn.sendall("ID ? (exit pour fermer la connexion)\n".encode())
+            # conn.sendall("ID ? (exit pour fermer la connexion)\n".encode())
             data = conn.recv(1024).decode().strip()  # .strip() pour enlever les espaces superflus
             if not data:
                 print("Aucune donnée reçue, fermeture de la connexion.")
