@@ -1,4 +1,5 @@
 import socket
+import config as cfg
 
 def start_server() -> None:
     """fonction de test pour l'écoute d'un client sur le port 6666
@@ -10,9 +11,9 @@ def start_server() -> None:
     addr: str
     
     
-    # setup du socket serveur, sur le port 6666 en mode écoute
+    # setup du socket serveur
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', 6666))
+    server_socket.bind((cfg.SERVER_IP, cfg.SERVER_PORT))
     server_socket.listen(1)
     print("Serveur en attente de connexion...")
 
