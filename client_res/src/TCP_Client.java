@@ -1,8 +1,14 @@
 import java.net.*;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+import javax.print.DocFlavor.STRING;
+
 import java.io.*;
 
 public class TCP_Client {
     private Socket clientSocket;
+    private String clientID;
     private PrintWriter out;
     private BufferedReader in;
 
@@ -10,9 +16,10 @@ public class TCP_Client {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        this.clientID = readClientID();
         String csvString = new CSVContent("csv_ressource\\csv_file.csv").getCSVString();
-        System.out.println("Envoi : abcde123456");
-        out.println("abcde123456");
+        System.out.println("Envoi :" + this.clientID);
+        out.println(this.clientID);
 
         String id = in.readLine();
         System.out.println("Reçu : " + id);
@@ -58,12 +65,28 @@ public class TCP_Client {
     }
 
     public static void main(String[] args) {
+        
         TCP_Client client = new TCP_Client();
         try {
             client.start("localhost", 6666); // Connexion à ncat en tant que client
             // System.out.println("Client lancé");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public String readClientID() {
+        try {
+            URL resource = CSVContent.class.getResource("conf.txt");
+            File csvFile = Paths.get(resource.toURI()).toFile();
+            Scanner csvReader = new Scanner(csvFile);
+            String clientID = csvReader.nextLine();
+            csvReader.close();
+            return clientID;
+        } catch (Exception e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+            return "";
         }
     }
 }
