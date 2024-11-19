@@ -1,7 +1,4 @@
 import java.net.*;
-
-import xmlClass.XMLContent;
-
 import java.io.*;
 
 public class TCP_Client {
@@ -13,30 +10,26 @@ public class TCP_Client {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-        XMLContent xml_content = new XMLContent();
-        xml_content.addEmployees("e_00000006","Lachaise","Jean","Caissier");
-
+        String csvString = new CSVContent("csv_ressource\\csv_file.csv").getCSVString();
         System.out.println("Envoi : abcde123456");
         out.println("abcde123456");
-        
+
         String id = in.readLine();
         System.out.println("Reçu : " + id);
-        
-        if(id.equals("id ok")) {
+
+        if (id.equals("id ok")) {
             System.out.println("Envoi : 10ko");
             out.println("10ko");
-            
+
             String volume = in.readLine();
             System.out.println("Reçu : " + volume);
-            
-            if(volume.equals("volume ok")) {
-                System.out.println(xml_content.getXMLContent());
-                out.println(xml_content.getXMLContent());
-                
+
+            if (volume.equals("volume ok")) {
+                System.out.println(csvString);
+                out.println(csvString);
                 String transfert = in.readLine();
                 System.out.println("Reçu : " + transfert);
-                
+
                 if (transfert.equals("transfert ok")) {
                     System.out.println("Envoi : succces du transfert, fermeture...");
                     out.println("succces du transfert, fermeture...");
