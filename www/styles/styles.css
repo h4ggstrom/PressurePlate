@@ -1,0 +1,382 @@
+/* Couleurs définies */
+:root {
+    --primary-color: #007bff;  /* Couleur principale - bleu vif */
+    --secondary-color: #014186; /* Couleur secondaire - bleu foncé */
+    --background-color: #f8f9fa; /* Fond de la page - gris clair */
+    --card-background: #ffffff; /* Fond des cartes - blanc */
+    --card-shadow: rgba(0, 0, 0, 0.1); /* Ombre de la carte - léger gris */
+    --card-shadow-hover: rgba(0, 0, 0, 0.2); /* Ombre de la carte au survol - gris plus foncé */
+    --text-color: #333333; /* Couleur du texte principal - gris foncé */
+}
+
+/* Fond général du site en dégradé */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); /* Dégradé de fond */
+    color: var(--text-color); /* Couleur du texte général */
+    margin: 0;
+    padding: 0;
+}
+
+/* Fond des sections avec le même dégradé */
+section {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); /* Dégradé de fond pour chaque section */
+    padding: 20px; /* Espacement autour du contenu des sections */
+    border-radius: 8px; /* Coins arrondis */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Fond des conteneurs avec dégradé */
+.stats-container {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); /* Dégradé de fond */
+    padding: 20px;
+    border-radius: 8px; /* Coins arrondis */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Disposition flexible des cartes */
+    gap: 20px; /* Espacement entre les cartes */
+    margin: 0 auto;
+    perspective: 1000px; /* Appliquer la perspective sur le conteneur */
+}
+
+/* Style de chaque carte */
+.stat-card {
+    background-color: var(--card-background); /* Fond blanc pour chaque carte */
+    border-radius: 8px; /* Coins arrondis */
+    padding: 20px;
+    box-shadow: 0 4px 10px var(--card-shadow); /* Ombre douce pour la carte */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Effet au survol */
+}
+
+/* Effet au survol de la carte : surélévation */
+.stat-card:hover {
+    transform: translateY(-10px); /* Surélévation légère sur l'axe Y */
+    box-shadow: 0 10px 20px var(--card-shadow-hover); /* Ombre plus prononcée */
+}
+
+/* Titre de la statistique */
+.stat-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color); /* Couleur primaire pour les h3 */
+    margin-bottom: 10px;
+}
+
+/* Valeur de la statistique */
+.stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--secondary-color); /* Valeur en bleu foncé */
+}
+
+/* Mise en forme pour les cartes lorsqu'il y a beaucoup de texte (ex: longues valeurs) */
+.stat-card p {
+    white-space: nowrap; /* Éviter que le texte soit coupé sur plusieurs lignes */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ajoute "..." si le texte est trop long */
+}
+
+/* Animation fade-in pour le titre */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1, h2 {
+    text-align: center; /* Centrer le texte */
+    color: white; /* Titres en blanc */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* Mettre le texte en majuscule */
+    letter-spacing: 2px; /* Espacement entre les lettres */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Ombre portée légère */
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); /* Dégradé de couleur */
+    padding: 10px; /* Ajouter un peu de padding pour un effet de surbrillance */
+    border-radius: 8px; /* Coins arrondis pour les titres */
+    animation: fadeIn 1s ease-out; /* Animation de fade-in */
+    margin-bottom: 20px; /* Espacement en dessous des titres */
+}
+
+/* Conteneur parent pour centrer le formulaire */
+.login-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Prendre toute la hauteur de la fenêtre */
+}
+
+/* Formulaire centré */
+.login-container {
+    background-color: white; /* Fond blanc du formulaire */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px; /* Limiter la largeur du formulaire */
+    box-sizing: border-box; /* S'assurer que padding est inclus dans la largeur totale */
+    position: absolute;
+    top: 50%;  /* Positionner à 50% de la hauteur de la page */
+    left: 50%; /* Positionner à 50% de la largeur de la page */
+    transform: translate(-50%, -50%); /* Centrer parfaitement */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 14px;
+    color: #333;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: #007bff; /* Couleur de la bordure au focus */
+}
+
+/* Style du bouton "Se connecter" */
+button.login-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button.login-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Style du nav */
+nav {
+    display: flex; /* Utiliser flexbox pour les éléments dans le nav */
+    align-items: center; /* Centrer les éléments verticalement */
+    padding: 10px 20px; /* Espacement intérieur */
+    background-color: white; /* Couleur de fond du nav */
+}
+
+/* Liens dans la navigation */
+.nav-links {
+    display: flex; /* Utiliser flexbox pour les liens */
+    justify-content: space-between; /* Centrer les liens horizontalement */
+    flex-grow: 1; /* Faire en sorte que les liens prennent tout l'espace disponible */
+    padding: 10px 20px;
+}
+
+.nav-links a {
+    color: var(--primary-color); /* Texte blanc */
+    font-size: 18px; /* Taille de police des liens */
+    text-decoration: none; /* Enlever le souligné des liens */
+    margin-right: 20px; /* Espacement entre les liens */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* Mettre en majuscule */
+    transition: transform 0.3s ease, color 0.3s ease; /* Transition pour l'élévation et la couleur */
+    display: inline-block; /* S'assurer que transform fonctionne correctement */
+}
+
+/* Effet de soulèvement au survol des liens */
+.nav-links a:hover {
+    color: var(--secondary-color); /* Couleur secondaire au survol */
+    transform: translateY(-5px); /* Soulèvement de 5px sur l'axe Y */
+}
+
+/* Formulaire du bouton de déconnexion */
+.logout-form {
+    margin: 0;
+    margin-left: auto; /* Pousser le formulaire à droite */
+}
+
+.logout-button {
+    background-color: #dc3545; /* Rouge pour le bouton de déconnexion */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #c82333; /* Couleur plus foncée au survol */
+}
+
+
+
+footer {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+}
+
+.footer-links li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.footer-links a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.admin-container {
+    background-color: var(--card-background); /* Fond blanc cohérent avec les cartes */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 4px 12px var(--card-shadow); /* Ombre douce */
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%; /* Prendre 90% de la largeur de l'écran */
+    max-width: 1200px; /* Limiter la largeur */
+}
+
+.form-container {
+    background-color: var(--card-background); /* Fond blanc pour chaque formulaire */
+    border-radius: 8px; /* Coins arrondis */
+    padding: 20px; /* Espacement intérieur */
+    box-shadow: 0 4px 10px var(--card-shadow); /* Ombre douce */
+    margin-bottom: 20px; /* Espacement entre les formulaires */
+}
+
+.form-container h2 {
+    color: white; /* Couleur principale pour les titres des formulaires */
+    margin-bottom: 15px;
+}
+
+.form-container label {
+    display: block; /* Les labels doivent occuper toute la largeur */
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.form-container input[type="text"], 
+.form-container input[type="password"], 
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-container button {
+    background-color: var(--primary-color); /* Bouton en bleu principal */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-container button:hover {
+    background-color: var(--secondary-color); /* Bouton en bleu foncé au survol */
+}
+
+.result-message {
+    background-color: var(--card-background); /* Fond blanc */
+    border-left: 5px solid var(--primary-color); /* Bord gauche en couleur principale */
+    padding: 20px;
+    border-radius: 8px; /* Coins arrondis */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px var(--card-shadow); /* Ombre douce */
+    text-align: center; /* Centrer le texte */
+}
+
+.result-message h2 {
+    color: var(--text-color); /* Texte en gris foncé */
+    margin-bottom: 10px;
+}
+
+.result-message button {
+    background-color: var(--secondary-color); /* Bouton bleu foncé */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.result-message button:hover {
+    background-color: #014186; /* Couleur légèrement plus foncée au survol */
+}
+
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.form-container select:hover {
+    border-color: var(--primary-color); /* Bordure colorée au survol */
+}
+
+.user-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-list th, 
+.user-list td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.user-list th {
+    background-color: var(--primary-color); /* En-tête du tableau en bleu */
+    color: white;
+    font-weight: bold;
+}
+
+.user-list tr:hover {
+    background-color: var(--card-background); /* Ligne survolée en blanc */
+}
