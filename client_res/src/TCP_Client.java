@@ -1,7 +1,6 @@
 import java.net.*;
 import java.nio.file.Paths;
 import java.util.Scanner;
-
 import javax.print.DocFlavor.STRING;
 
 import java.io.*;
@@ -25,27 +24,31 @@ public class TCP_Client {
         System.out.println("Reçu : " + id);
 
         if (id.equals("id ok")) {
-            System.out.println("Envoi : 10ko");
-            out.println("10ko");
+            System.out.println("Envoi : stats");
+            out.println("stats");
 
-            String volume = in.readLine();
-            System.out.println("Reçu : " + volume);
+            String intention = in.readLine();
+            System.out.println("Reçu : " + intention);
 
-            if (volume.equals("volume ok")) {
+            if (intention.equals("intention valide")) {
                 System.out.println(csvString);
                 out.println(csvString);
                 String transfert = in.readLine();
                 System.out.println("Reçu : " + transfert);
 
-                if (transfert.equals("transfert ok")) {
+                if (transfert.equals("Fichier reçu")) {
                     System.out.println("Envoi : succces du transfert, fermeture...");
-                    out.println("succces du transfert, fermeture...");
+                    out.println("close");
                     System.out.println("Succes transfert");
                 } else {
                     System.out.println("Envoi : transfert error");
-                    out.println("transfert error");
+                    out.println("close");
                     throw new Exception("Echec Transfert");
                 }
+
+                
+
+
             } else {
                 System.out.println("Envoi : fichier trop volumineux");
                 out.println("fichier trop volumineux");
@@ -65,10 +68,10 @@ public class TCP_Client {
     }
 
     public static void main(String[] args) {
-        
+        ConfClass conf = new ConfClass();
         TCP_Client client = new TCP_Client();
         try {
-            client.start("localhost", 24816 ); // Connexion à ncat en tant que client
+            client.start(conf.readIP(), conf.readPort()); // Connexion à ncat en tant que client
             // System.out.println("Client lancé");
         }catch (UnknownHostException e) {
             e.printStackTrace();
@@ -98,4 +101,5 @@ public class TCP_Client {
             return "";
         }
     }
+    
 }
