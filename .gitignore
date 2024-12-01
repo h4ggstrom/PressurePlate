@@ -1,3 +1,4 @@
 .env
 .venv
 server_res/__pycache__
+server.log

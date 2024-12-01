@@ -14,6 +14,8 @@ SERVER_PORT =int(os.getenv("SERVER_PORT"))
 LOGIN = os.getenv("LOGIN")
 PW = os.getenv("PASSWORD")
 DBNAME = os.getenv("DBNAME")
+DB_IP = os.getenv("DB_IP")
+DB_PORT = os.getenv("DB_PORT")
 
 # checking if all the variables are defined
 if not all([SERVER_IP, SERVER_PORT, LOGIN, PW, DBNAME]):
