@@ -1,7 +1,6 @@
 import java.net.*;
 import java.nio.file.Paths;
 import java.util.Scanner;
-
 import javax.print.DocFlavor.STRING;
 
 import java.io.*;
@@ -65,10 +64,10 @@ public class TCP_Client {
     }
 
     public static void main(String[] args) {
-        
+        ConfClass conf = new ConfClass();
         TCP_Client client = new TCP_Client();
         try {
-            client.start("localhost", 24816 ); // Connexion à ncat en tant que client
+            client.start(conf.readIP(), conf.readPort()); // Connexion à ncat en tant que client
             // System.out.println("Client lancé");
         }catch (UnknownHostException e) {
             e.printStackTrace();
@@ -98,4 +97,5 @@ public class TCP_Client {
             return "";
         }
     }
+    
 }
