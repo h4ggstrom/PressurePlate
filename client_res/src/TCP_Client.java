@@ -54,7 +54,8 @@ public class TCP_Client {
                 out.println("fichier trop volumineux");
                 throw new Exception("Fichier trop volumineux");
             }
-        } else {
+        } 
+        else {
             System.out.println("Envoi : ID error");
             out.println("ID error");
             throw new Exception("ID Error");
