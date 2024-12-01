@@ -24,27 +24,31 @@ public class TCP_Client {
         System.out.println("Reçu : " + id);
 
         if (id.equals("id ok")) {
-            System.out.println("Envoi : 10ko");
-            out.println("10ko");
+            System.out.println("Envoi : stats");
+            out.println("stats");
 
-            String volume = in.readLine();
-            System.out.println("Reçu : " + volume);
+            String intention = in.readLine();
+            System.out.println("Reçu : " + intention);
 
-            if (volume.equals("volume ok")) {
+            if (intention.equals("intention valide")) {
                 System.out.println(csvString);
                 out.println(csvString);
                 String transfert = in.readLine();
                 System.out.println("Reçu : " + transfert);
 
-                if (transfert.equals("transfert ok")) {
+                if (transfert.equals("Fichier reçu")) {
                     System.out.println("Envoi : succces du transfert, fermeture...");
-                    out.println("succces du transfert, fermeture...");
+                    out.println("close");
                     System.out.println("Succes transfert");
                 } else {
                     System.out.println("Envoi : transfert error");
-                    out.println("transfert error");
+                    out.println("close");
                     throw new Exception("Echec Transfert");
                 }
+
+                
+
+
             } else {
                 System.out.println("Envoi : fichier trop volumineux");
                 out.println("fichier trop volumineux");
