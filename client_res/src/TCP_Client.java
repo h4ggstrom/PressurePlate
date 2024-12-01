@@ -68,9 +68,18 @@ public class TCP_Client {
         
         TCP_Client client = new TCP_Client();
         try {
-            client.start("localhost", 6666); // Connexion à ncat en tant que client
+            client.start("localhost", 24816 ); // Connexion à ncat en tant que client
             // System.out.println("Client lancé");
-        } catch (Exception e) {
+        }catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        catch(IllegalArgumentException e){
+            e.printStackTrace();
+        }
+        catch(SecurityException e){
+            e.printStackTrace();
+        }
+         catch (Exception e) {
             e.printStackTrace();
         }
     }
