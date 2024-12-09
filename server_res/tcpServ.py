@@ -10,6 +10,7 @@ logger.add("server.log", format="{time} {level} {message}", level="DEBUG")
 
 BUFFER_SIZE = 1024  # Taille maximale des paquets pour éviter les dépassements de tampon
 PROTOCOL_VERSION = "1.0"  # Version de protocole pour validation future
+TIMEOUT = 10  # Timeout de 10 secondes
 
 # Fonction pour vérifier si l'ID Client est valide
 def is_valid_client_id(client_id):
@@ -41,6 +42,7 @@ def is_valid_client_id(client_id):
 # Fonction pour gérer chaque client
 def handle_client(client_socket, client_address):
     logger.info(f"Connexion établie avec {client_address}")
+    client_socket.settimeout(TIMEOUT)
     
     try:
         # Étape 1 : Réception de l'ID Client
@@ -113,7 +115,7 @@ def handle_client(client_socket, client_address):
                 port=DB_PORT
             )
             cur = conn.cursor()
-            logger.info(f"Connexion à la base de données {DBNAME} à l'adresse {DB_IP}:{DB_PORT} via utilisateur {LOGIN} établie.")
+            logger.info(f"Connexion à la base de données établie.")
             # Exécuter une requête pour insérer les données dans la table passage
             query = "INSERT INTO passages (passage_id, passage_date, passage_duree, capteur_id) VALUES (%s, %s, %s, %s)"
             cur.executemany(query, data_to_insert)
@@ -142,6 +144,8 @@ def handle_client(client_socket, client_address):
             f.write(chunk)
         logger.info("fichier CSV sauvegardé sous 'received_stats.csv'.")
 
+    except socket.timeout:
+        logger.error("Timeout atteint, fermeture de la connexion.")
     except BlockingIOError as e:
         logger.error("erreur de blocking")
     except Exception as e:
