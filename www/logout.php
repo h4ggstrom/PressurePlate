@@ -1,4 +1,4 @@
 <?php
-  $hashedPassword = password_hash("zioum", PASSWORD_DEFAULT);
+  $hashedPassword = password_hash("basededonnées", PASSWORD_DEFAULT);
   echo $hashedPassword;
 ?>

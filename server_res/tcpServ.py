@@ -2,6 +2,7 @@ import socket
 from loguru import logger
 from config import SERVER_IP, SERVER_PORT, LOGIN, PW, DBNAME, DB_IP, DB_PORT
 import psycopg2
+import csv
 
 # Configurer Loguru pour tracer les actions dans un fichier
 logger.add("server.log", format="{time} {level} {message}", level="DEBUG")
@@ -33,7 +34,7 @@ def is_valid_client_id(client_id):
         
         return result > 0
     except Exception as e:
-        logger.error(f"Erreur lors de la vérification de l'ID Client : {e}")
+        logger.error(f"Erreur de connexion à la database : {e}")
         return False
 
 # Fonction pour gérer chaque client
@@ -56,7 +57,7 @@ def handle_client(client_socket, client_address):
             return
         
         logger.info(f"ID Client valide reçu : {client_id}")
-        client_socket.send(b"ID OK")
+        client_socket.send(b"ID OK\n")
 
         # Étape 2 : Annonce d'intention
         intention = client_socket.recv(BUFFER_SIZE).decode().strip()
@@ -66,27 +67,62 @@ def handle_client(client_socket, client_address):
             client_socket.close()
             return
         logger.info("Intention valide reçue : stats")
-        client_socket.send(b"Intention valide")
+        client_socket.send(b"Intention valide\n")
 
         # Étape 3 : Réception du fichier CSV
-        logger.info("en attente de la réception du fichier CSV...")
+        logger.info("en attente de la réception du fichier CSV...\n")
         file_data = b""
+        """
+        """
+        i=0
         while True:
             chunk = client_socket.recv(BUFFER_SIZE)
             if not chunk:  # Pas de données supplémentaires
                 break
             file_data += chunk
+            logger.debug(f"Chunk {i} reçu, taille : {len(chunk)}")
             # Ajout d'une vérification contre les dépassements
             if len(file_data) > 10 * 1024 * 1024:  # 10 MB max
                 logger.error("Fichier trop volumineux reçu, connexion coupée.")
                 client_socket.send(b"Fichier trop volumineux")
                 client_socket.close()
-                return
 
-        # Étape 4 : Confirmation de réception
-        logger.info("Fichier CSV reçu avec succès.")
-        client_socket.send("Fichier reçu")
+        # Étape 4 : Envoi des données à la base de données
+        if file_data:
+            # Convertir les données du fichier CSV en liste de dictionnaires
+            csv_data = file_data.decode().splitlines()
+            csv_reader = csv.DictReader(csv_data)
+            data_to_insert = []
+            for row in csv_reader:
+                passage_id = row['passage_id']
+                passage_date = row['passage_date']
+                passage_duree = row['passage_duree']
+                capteur_id = row['capteur_id']
+                data_to_insert.append((passage_id, passage_date, passage_duree, capteur_id))
 
+            # Connexion à la base de données
+            conn = psycopg2.connect(
+                dbname=DBNAME,
+                user=LOGIN,
+                password=PW,
+                host=DB_IP,
+                port=DB_PORT
+            )
+            cur = conn.cursor()
+
+            # Exécuter une requête pour insérer les données dans la table passage
+            query = "INSERT INTO passage (passage_id, passage_date, passage_duree, capteur_id) VALUES (%s, %s, %s, %s)"
+            cur.executemany(query, data_to_insert)
+            conn.commit()
+
+            # Nettoyage
+            cur.close()
+            conn.close()
+
+            logger.info("Données insérées dans la base de données.")
+        else:
+            logger.warning("aucune donnée à envoyer")
+        
         # Étape 5 : Annonce de clôture
         closure_announcement = client_socket.recv(BUFFER_SIZE).decode().strip()
         if closure_announcement != "close":
@@ -103,10 +139,12 @@ def handle_client(client_socket, client_address):
         logger.info("Fichier CSV sauvegardé sous 'received_stats.csv'.")
 
     except Exception as e:
-        logger.error(f"Erreur lors de la gestion du client {client_address} : {e}")
+        #logger.error(f"Erreur lors de la gestion du client {client_address} : {e}")
+        i = 0
     finally:
         client_socket.close()
         logger.info(f"Connexion avec {client_address} fermée.")
+        logger.info(f"retour en écoute...")
 
 # Fonction principale pour lancer le serveur
 def start_server():

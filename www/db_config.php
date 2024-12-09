@@ -2,7 +2,7 @@
 require_once 'load_env.php';
 
 try {
-    loadEnv(__DIR__ . '/.env');
+    loadEnv(__DIR__ . './../.env');
 } catch (Exception $e) {
     die($e->getMessage());
 }

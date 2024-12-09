@@ -23,20 +23,20 @@ public class TCP_Client {
         String id = in.readLine();
         System.out.println("Reçu : " + id);
 
-        if (id.equals("id ok")) {
+        if (id.equals("ID OK")) {
             System.out.println("Envoi : stats");
             out.println("stats");
 
             String intention = in.readLine();
             System.out.println("Reçu : " + intention);
 
-            if (intention.equals("intention valide")) {
+            if (intention.equals("Intention valide")) {
                 System.out.println(csvString);
                 out.println(csvString);
                 String transfert = in.readLine();
                 System.out.println("Reçu : " + transfert);
 
-                if (transfert.equals("Fichier reçu")) {
+                if (transfert.equals("Fichier recu")) {
                     System.out.println("Envoi : succces du transfert, fermeture...");
                     out.println("close");
                     System.out.println("Succes transfert");
@@ -50,9 +50,9 @@ public class TCP_Client {
 
 
             } else {
-                System.out.println("Envoi : fichier trop volumineux");
-                out.println("fichier trop volumineux");
-                throw new Exception("Fichier trop volumineux");
+                System.out.println("Envoi : Erreur d'intention");
+                out.println("Erreur d'intention");
+                throw new Exception("Erreur d'intention");
             }
         } 
         else {
@@ -74,7 +74,8 @@ public class TCP_Client {
         try {
             client.start(conf.readIP(), conf.readPort()); // Connexion à ncat en tant que client
             // System.out.println("Client lancé");
-        }catch (UnknownHostException e) {
+        }
+        catch (UnknownHostException e) {
             e.printStackTrace();
         }
         catch(IllegalArgumentException e){
@@ -83,8 +84,11 @@ public class TCP_Client {
         catch(SecurityException e){
             e.printStackTrace();
         }
-         catch (Exception e) {
-            e.printStackTrace();
+        catch(SocketException e){
+            System.out.println("connexion fermée par le server");
+        }
+        catch (Exception e) {
+            e.getCause();
         }
     }
 
