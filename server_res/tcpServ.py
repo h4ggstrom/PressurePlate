@@ -3,6 +3,7 @@ from loguru import logger
 from config import SERVER_IP, SERVER_PORT, LOGIN, PW, DBNAME, DB_IP, DB_PORT
 import psycopg2
 import csv
+import os
 
 # Configurer Loguru pour tracer les actions dans un fichier
 logger.add("server.log", format="{time} {level} {message}", level="DEBUG")
@@ -71,47 +72,50 @@ def handle_client(client_socket, client_address):
 
         # Étape 3 : Réception du fichier CSV
         logger.info("en attente de la réception du fichier CSV...\n")
-        file_data = b""
-        """
-        """
-        i=0
-        while True:
-            chunk = client_socket.recv(BUFFER_SIZE)
-            if not chunk:  # Pas de données supplémentaires
-                break
-            file_data += chunk
-            logger.debug(f"Chunk {i} reçu, taille : {len(chunk)}")
-            # Ajout d'une vérification contre les dépassements
-            if len(file_data) > 10 * 1024 * 1024:  # 10 MB max
-                logger.error("Fichier trop volumineux reçu, connexion coupée.")
-                client_socket.send(b"Fichier trop volumineux")
-                client_socket.close()
+        chunk = client_socket.recv(BUFFER_SIZE).decode()
+        if not chunk:  # Pas de données supplémentaires
+            logger.info("fichier vide")
+        logger.debug(f"fichier reçu, taille : {len(chunk)}")
+        logger.debug(chunk)
+        # Ajout d'une vérification contre les dépassements
+        if len(chunk) > 10 * 1024 * 1024:  # 10 MB max
+            logger.error("Fichier trop volumineux reçu, connexion coupée.")
+            client_socket.send(b"Fichier trop volumineux")
+            client_socket.close()
+
+        # Sauvegarder le fichier reçu (dans un dossier temporaire pour l'instant)
+        with open("./received_stats.csv", "w") as f:
+            f.write(chunk)
+        logger.info("Fichier CSV sauvegardé sous 'received_stats.csv'.")
 
         # Étape 4 : Envoi des données à la base de données
-        if file_data:
+        if os.path.exists("./received_stats.csv"):
             # Convertir les données du fichier CSV en liste de dictionnaires
-            csv_data = file_data.decode().splitlines()
-            csv_reader = csv.DictReader(csv_data)
-            data_to_insert = []
-            for row in csv_reader:
-                passage_id = row['passage_id']
-                passage_date = row['passage_date']
-                passage_duree = row['passage_duree']
-                capteur_id = row['capteur_id']
-                data_to_insert.append((passage_id, passage_date, passage_duree, capteur_id))
+            logger.debug("envoi à la DB")
+            with open("./received_stats.csv", "r") as csv_data:
+                csv_reader = csv.DictReader(csv_data)
+                # Skip the header row
+                next(csv_reader)
+                data_to_insert = []
+                for row in csv_reader:
+                    passage_id = row['passage_id']
+                    passage_date = row['passage_date']
+                    passage_duree = row['passage_duree']
+                    capteur_id = row['capteur_id']
+                    data_to_insert.append((passage_id, passage_date, passage_duree, capteur_id))
 
             # Connexion à la base de données
             conn = psycopg2.connect(
-                dbname=DBNAME,
-                user=LOGIN,
-                password=PW,
-                host=DB_IP,
+                dbname="robin-de-angelis_postgres",
+                user="robin-de-angelis",
+                password="R3l0udu78",
+                host="postgresql-robin-de-angelis.alwaysdata.net",
                 port=DB_PORT
             )
             cur = conn.cursor()
-
+            logger.info(f"Connexion à la base de données {DBNAME} à l'adresse {DB_IP}:{DB_PORT} via utilisateur {LOGIN} établie.")
             # Exécuter une requête pour insérer les données dans la table passage
-            query = "INSERT INTO passage (passage_id, passage_date, passage_duree, capteur_id) VALUES (%s, %s, %s, %s)"
+            query = "INSERT INTO passages (passage_id, passage_date, passage_duree, capteur_id) VALUES (%s, %s, %s, %s)"
             cur.executemany(query, data_to_insert)
             conn.commit()
 
@@ -135,11 +139,13 @@ def handle_client(client_socket, client_address):
         
         # Sauvegarder le fichier reçu (dans un dossier temporaire pour l'instant)
         with open("received_stats.csv", "wb") as f:
-            f.write(file_data)
-        logger.info("Fichier CSV sauvegardé sous 'received_stats.csv'.")
+            f.write(chunk)
+        logger.info("fichier CSV sauvegardé sous 'received_stats.csv'.")
 
+    except BlockingIOError as e:
+        logger.error("erreur de blocking")
     except Exception as e:
-        #logger.error(f"Erreur lors de la gestion du client {client_address} : {e}")
+        logger.error(f"Erreur lors de la gestion du client {client_address} : {e}")
         i = 0
     finally:
         client_socket.close()
